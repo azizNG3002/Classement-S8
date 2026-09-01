@@ -522,53 +522,7 @@ document.getElementById('badge-journee').textContent = `Journée ${CURRENT_JOURN
 document.getElementById('update-note').innerHTML =
   `Dernière mise à jour effectuée <b>${formatFrenchDate(LAST_UPDATE, 'à')}</b>`;
 
-// ---- CLASSEMENT : stats [nom, MJ, V, N, D, GF, GA] ----
-const raw = [
-  ["Mahdi",7,2,2,3,14,15],
-  ["Omar",6,4,1,1,22,12],
-  ["Fehmi",6,3,1,2,11,11],
-  ["Ala",6,3,2,1,18,15],
-  ["Amen",6,4,2,0,33,12],
-  ["Firas",7,5,2,0,21,7],
-  ["Aziz",6,5,1,0,19,8],
-  ["Moataz",7,1,4,2,12,17],
-  ["Louay",7,1,2,4,7,19],
-  ["Nouigues",7,2,1,4,17,21],
-  ["Marwen",6,1,1,3,11,17],
-  ["Wael",6,3,0,3,22,19],
-  ["Mounir",7,0,0,7,2,24],
-  ["Salah",6,0,1,4,11,23],
-];
-
-const players = raw.map(([nom, mj, v, n, d, gf, ga]) => ({
-  nom, mj, v, n, d, gf, ga, db: gf - ga, pts: v * 3 + n
-}));
-players.sort((a, b) => b.pts - a.pts || b.db - a.db || b.gf - a.gf);
-
-// Joueurs éliminés (décision de fédération) : leurs matchs restants sont comptés
-// perdus 3 - 0 automatiquement, mais seulement journée par journée au fur et à
-// mesure — pas toute la saison d'un coup. Seuil actuel : jusqu'à J5 inclus.
-const ELIMINATED = ["Mounir"];
-const ELIMINATION_LAST_JOURNEE = 7; // dernière journée (numéro, 1-indexé) où le forfait s'applique
-
-const tbody = document.getElementById('tbody');
-players.forEach((p, i) => {
-  const tr = document.createElement('tr');
-  const dbTxt = p.db > 0 ? `+${p.db}` : `${p.db}`;
-  tr.innerHTML = `<td class="rank">${i+1}</td><td>${p.nom}</td><td>${p.mj}</td><td>${p.v}</td><td>${p.n}</td><td>${p.d}</td><td>${dbTxt}</td><td class="pts">${p.pts}</td>`;
-  tbody.appendChild(tr);
-});
-
-// ---- JOUEURS : liste des 14 noms ----
-const playerNames = raw.map(r => r[0]).sort((a, b) => a.localeCompare(b, 'fr'));
-const playersGrid = document.getElementById('players-grid');
-playerNames.forEach((nom, i) => {
-  const div = document.createElement('div');
-  div.className = 'player-card';
-  const elimTag = ELIMINATED.includes(nom) ? ' <span class="elim-tag">Éliminé</span>' : '';
-  div.innerHTML = `<span class="player-num">${String(i+1).padStart(2,'0')}</span><span class="player-name">${nom}${elimTag}</span>`;
-  playersGrid.appendChild(div);
-});
+// ---- LISTE DES JOUEURS + CALENDRIER + RÉSULTATS (source unique de vérité) ----
 
 // ---- MATCHS : calendrier officiel de la phase aller (13 journées, 7 matchs/journée) ----
 // Pour ajouter un score une fois le match joué : remplis scoreHome / scoreAway (sinon laisser null = "à venir").
@@ -589,6 +543,7 @@ const schedule = [
 ];
 
 // Résultats connus : "Home-Away": [scoreHome, scoreAway]
+
 const results = {
   // Journée 1
   "Moataz-Louay": [1,1],
@@ -643,9 +598,83 @@ const results = {
 
 // Matchs décidés par la fédération avec un score forcé mais SANS points attribués
 // (contrairement à un vrai match nul qui donne 1 pt à chacun).
+
 const FEDERATION_ZERO_POINTS = ["Marwen-Salah"];
 
-// Matchs reportés : { key: "Home-Away" (tel que dans schedule), from: index journée d'origine, to: index journée cible }
+// Joueurs éliminés (décision de fédération) : leurs matchs restants sont comptés
+// perdus 3 - 0 automatiquement, mais seulement journée par journée au fur et à
+// mesure — pas toute la saison d'un coup. Seuil actuel : jusqu'à J5 inclus.
+const ELIMINATED = ["Mounir"];
+const ELIMINATION_LAST_JOURNEE = 7; // dernière journée (numéro, 1-indexé) où le forfait s'applique
+
+function getMatchResult(home, away, journeeIndex) {
+  const key = `${home}-${away}`;
+  if (results[key]) return { score: results[key], forfeit: false };
+  const withinThreshold = journeeIndex + 1 <= ELIMINATION_LAST_JOURNEE;
+  if (withinThreshold && ELIMINATED.includes(home)) return { score: [0, 3], forfeit: true };
+  if (withinThreshold && ELIMINATED.includes(away)) return { score: [3, 0], forfeit: true };
+  return { score: null, forfeit: false };
+}
+
+// Date limite (DDL) de chaque journée : J1 = jeudi 27 août 2026, 02:00, puis +24h par journée.
+
+// ---- LISTE DES JOUEURS (source unique) ----
+const PLAYERS = ["Nouigues","Omar","Mahdi","Wael","Ala","Aziz","Firas","Amen","Fehmi","Salah","Mounir","Marwen","Moataz","Louay"];
+
+// ---- CLASSEMENT : calculé automatiquement à partir de schedule + results ----
+// (plus de tableau "raw" à maintenir à la main : tout part des scores bruts.)
+function computeStandings() {
+  const stats = {};
+  PLAYERS.forEach(nom => { stats[nom] = { nom, mj: 0, v: 0, n: 0, d: 0, gf: 0, ga: 0 }; });
+
+  schedule.forEach((day, i) => {
+    day.forEach(([home, away]) => {
+      const key = `${home}-${away}`;
+      const { score } = getMatchResult(home, away, i);
+      if (!score) return;
+      const [sh, sa] = score;
+      const isZero = FEDERATION_ZERO_POINTS.includes(key);
+
+      // Décision fédération à 0 point : le match compte comme "joué" (MJ+1)
+      // mais n'affecte ni le nombre de V/N/D, ni les buts.
+      stats[home].mj++; stats[away].mj++;
+      if (isZero) return;
+
+      stats[home].gf += sh; stats[home].ga += sa;
+      stats[away].gf += sa; stats[away].ga += sh;
+      if (sh > sa) { stats[home].v++; stats[away].d++; }
+      else if (sh < sa) { stats[away].v++; stats[home].d++; }
+      else { stats[home].n++; stats[away].n++; }
+    });
+  });
+
+  return Object.values(stats);
+}
+
+const players = computeStandings().map(p => ({
+  ...p, db: p.gf - p.ga, pts: p.v * 3 + p.n
+}));
+players.sort((a, b) => b.pts - a.pts || b.db - a.db || b.gf - a.gf);
+
+const tbody = document.getElementById('tbody');
+players.forEach((p, i) => {
+  const tr = document.createElement('tr');
+  const dbTxt = p.db > 0 ? `+${p.db}` : `${p.db}`;
+  tr.innerHTML = `<td class="rank">${i+1}</td><td>${p.nom}</td><td>${p.mj}</td><td>${p.v}</td><td>${p.n}</td><td>${p.d}</td><td>${dbTxt}</td><td class="pts">${p.pts}</td>`;
+  tbody.appendChild(tr);
+});
+
+// ---- JOUEURS : liste des 14 noms ----
+const playerNames = PLAYERS.slice().sort((a, b) => a.localeCompare(b, 'fr'));
+const playersGrid = document.getElementById('players-grid');
+playerNames.forEach((nom, i) => {
+  const div = document.createElement('div');
+  div.className = 'player-card';
+  const elimTag = ELIMINATED.includes(nom) ? ' <span class="elim-tag">Éliminé</span>' : '';
+  div.innerHTML = `<span class="player-num">${String(i+1).padStart(2,'0')}</span><span class="player-name">${nom}${elimTag}</span>`;
+  playersGrid.appendChild(div);
+});
+
 const REPORTS = [
   { key: "Moataz-Mounir", from: 1, to: 2 },
   { key: "Wael-Firas", from: 1, to: 2 },
@@ -658,16 +687,7 @@ const REPORTS = [
 
 // Joueurs éliminés : voir plus haut (déplacé avant l'onglet Joueurs).
 
-function getMatchResult(home, away, journeeIndex) {
-  const key = `${home}-${away}`;
-  if (results[key]) return { score: results[key], forfeit: false };
-  const withinThreshold = journeeIndex + 1 <= ELIMINATION_LAST_JOURNEE;
-  if (withinThreshold && ELIMINATED.includes(home)) return { score: [0, 3], forfeit: true };
-  if (withinThreshold && ELIMINATED.includes(away)) return { score: [3, 0], forfeit: true };
-  return { score: null, forfeit: false };
-}
 
-// Date limite (DDL) de chaque journée : J1 = jeudi 27 août 2026, 02:00, puis +24h par journée.
 const DDL_BASE = new Date(2026, 7, 27, 2, 0); // mois 7 = août (index 0-based)
 function formatDDL(date) {
   const jour = date.toLocaleDateString('fr-FR', { weekday: 'long' });
@@ -679,6 +699,7 @@ function formatDDL(date) {
   const jourCap = jour.charAt(0).toUpperCase() + jour.slice(1);
   return `${jourCap} ${jourNum} ${mois} ${annee} · ${heure}:${min}`;
 }
+
 
 const matchdays = schedule.map((day, i) => ({
   journee: i + 1,
@@ -715,6 +736,7 @@ REPORTS.forEach(rep => {
     reportedFrom: rep.from,
   });
 });
+
 
 const journeeNav = document.getElementById('journee-nav');
 const journeePanels = document.getElementById('journee-panels');
@@ -766,6 +788,7 @@ matchdays.forEach((jd, idx) => {
   journeePanels.appendChild(panel);
 });
 
+
 journeeNav.addEventListener('click', (e) => {
   const btn = e.target.closest('.journee-btn');
   if (!btn) return;
@@ -774,6 +797,7 @@ journeeNav.addEventListener('click', (e) => {
   btn.classList.add('active');
   document.getElementById(`journee-${btn.dataset.journee}`).classList.add('active');
 });
+
 
 // ---- CARTES : suivi joker / report ----
 const cardPlayers = ["Nouigues","Omar","Mahdi","Wael","Ala","Aziz","Firas","Amen","Fehmi","Salah","Mounir","Marwen","Moataz","Louay"];
@@ -802,6 +826,7 @@ cardPlayers.forEach((p, i) => {
     <td>${box(s.reportRetour)}</td>`;
   tbodyCartes.appendChild(tr);
 });
+
 
 // ---- NAVIGATION PRINCIPALE ----
 document.querySelectorAll('.nav-tab').forEach(tab => {
