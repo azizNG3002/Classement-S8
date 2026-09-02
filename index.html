@@ -609,16 +609,14 @@ const results = {
 
 const FEDERATION_ZERO_POINTS = ["Marwen-Salah"];
 
-// Joueurs éliminés (décision de fédération) : leurs matchs restants sont comptés
-// perdus 3 - 0 automatiquement, mais seulement journée par journée au fur et à
-// mesure — pas toute la saison d'un coup. Seuil actuel : jusqu'à J5 inclus.
+// (le forfait s'applique automatiquement jusqu'à la journée actuelle — CURRENT_JOURNEE,
+// mise à jour à chaque nouveau résultat envoyé via WhatsApp)
 const ELIMINATED = ["Mounir"];
-const ELIMINATION_LAST_JOURNEE = 7; // dernière journée (numéro, 1-indexé) où le forfait s'applique
 
 function getMatchResult(home, away, journeeIndex) {
   const key = `${home}-${away}`;
   if (results[key]) return { score: results[key], forfeit: false };
-  const withinThreshold = journeeIndex + 1 <= ELIMINATION_LAST_JOURNEE;
+  const withinThreshold = journeeIndex + 1 <= CURRENT_JOURNEE;
   if (withinThreshold && ELIMINATED.includes(home)) return { score: [0, 3], forfeit: true };
   if (withinThreshold && ELIMINATED.includes(away)) return { score: [3, 0], forfeit: true };
   return { score: null, forfeit: false };
