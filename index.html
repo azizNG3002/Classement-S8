@@ -772,16 +772,17 @@ REPORTS.forEach(rep => {
 
 const journeeNav = document.getElementById('journee-nav');
 const journeePanels = document.getElementById('journee-panels');
+const defaultJourneeIdx = Math.min(Math.max(CURRENT_JOURNEE - 1, 0), matchdays.length - 1);
 
 matchdays.forEach((jd, idx) => {
   const btn = document.createElement('button');
-  btn.className = 'journee-btn' + (idx === 0 ? ' active' : '');
+  btn.className = 'journee-btn' + (idx === defaultJourneeIdx ? ' active' : '');
   btn.textContent = `J${jd.journee}`;
   btn.dataset.journee = idx;
   journeeNav.appendChild(btn);
 
   const panel = document.createElement('div');
-  panel.className = 'journee-panel' + (idx === 0 ? ' active' : '');
+  panel.className = 'journee-panel' + (idx === defaultJourneeIdx ? ' active' : '');
   panel.id = `journee-${idx}`;
 
   const header = document.createElement('div');
@@ -819,6 +820,10 @@ matchdays.forEach((jd, idx) => {
 
   journeePanels.appendChild(panel);
 });
+
+// Amène l'onglet de la journée en cours dans la vue (la barre défile horizontalement)
+const activeBtn = journeeNav.querySelector('.journee-btn.active');
+if (activeBtn) activeBtn.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
 
 
 journeeNav.addEventListener('click', (e) => {
