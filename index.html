@@ -772,7 +772,16 @@ REPORTS.forEach(rep => {
 
 const journeeNav = document.getElementById('journee-nav');
 const journeePanels = document.getElementById('journee-panels');
-const defaultJourneeIdx = Math.min(Math.max(CURRENT_JOURNEE - 1, 0), matchdays.length - 1);
+// Une journée est "réglée" quand chacun de ses matchs a un score OU a été reporté ailleurs.
+// On part de CURRENT_JOURNEE et on avance tant que la journée est entièrement réglée,
+// pour tomber sur la vraie journée "active" (celle où il reste des matchs à jouer).
+function isJourneeResolved(jd) {
+  return jd.matches.every(m => m.scoreHome !== null || m.reportedTo != null);
+}
+let defaultJourneeIdx = Math.min(Math.max(CURRENT_JOURNEE - 1, 0), matchdays.length - 1);
+while (defaultJourneeIdx < matchdays.length - 1 && isJourneeResolved(matchdays[defaultJourneeIdx])) {
+  defaultJourneeIdx++;
+}
 
 matchdays.forEach((jd, idx) => {
   const btn = document.createElement('button');
