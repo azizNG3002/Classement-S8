@@ -669,7 +669,7 @@
 // ---- EN-TÊTE : journée en cours + dernière mise à jour ----
 const CURRENT_JOURNEE_ALLER = 13; // dernière journée aller entamée / en cours
 const CURRENT_JOURNEE_RETOUR = 0; // 0 = phase retour pas encore commencée
-const LAST_UPDATE = new Date(2026, 8, 8, 2, 27); // à modifier à chaque mise à jour
+const LAST_UPDATE = new Date(2026, 8, 9, 15, 57); // à modifier à chaque mise à jour
 
 function formatFrenchDate(date, joiner) {
   const jour = date.toLocaleDateString('fr-FR', { weekday: 'long' });
@@ -835,6 +835,8 @@ const results = {
   "Ala-Salah": [3,2],
   // Journée 13 (via WhatsApp)
   "Mahdi-Marwen": [3,0],
+  // Journée 13 (via WhatsApp)
+  "Aziz-Fehmi": [0,3],
 };
 
 // Matchs décidés par la fédération avec un score forcé mais SANS points attribués
