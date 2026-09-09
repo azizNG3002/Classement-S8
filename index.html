@@ -96,7 +96,11 @@
     border-radius: 6px;
     padding: 5px;
     background: rgba(255,255,255,0.02);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
+  .nav-tabs::-webkit-scrollbar { height: 4px; }
+  .nav-tabs::-webkit-scrollbar-thumb { background: rgba(90,170,255,0.3); border-radius: 4px; }
 
   .nav-tab {
     flex: 1;
@@ -116,6 +120,146 @@
   .nav-tab.active {
     color: #000000;
     background: linear-gradient(90deg, #2f8fff, #7fc4ff);
+  }
+
+  .phase-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(90,170,255,0.25);
+    border-radius: 6px;
+    padding: 5px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .phase-tab {
+    flex: 1;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1.5px;
+    font-size: 13px;
+    color: #7fa0c4;
+    padding: 8px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .phase-tab.active {
+    color: #000000;
+    background: linear-gradient(90deg, #ff9d4d, #ffc98a);
+  }
+
+  .phase-block { display: none; }
+  .phase-block.active { display: block; }
+
+  .cup-round-title {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    font-size: 15px;
+    color: #ff9d4d;
+    margin: 22px 0 8px;
+  }
+  .cup-round-title:first-child { margin-top: 0; }
+  .cup-champion-banner {
+    text-align: center;
+    padding: 16px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #ff9d4d, #ffc98a);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    font-size: 18px;
+  }
+
+  /* ---- Bracket coupe (tableau de qualification) ---- */
+  .bracket-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+  }
+  .bracket-scroll::-webkit-scrollbar { height: 4px; }
+  .bracket-scroll::-webkit-scrollbar-thumb { background: rgba(90,170,255,0.3); border-radius: 4px; }
+  .bracket {
+    display: flex;
+    gap: 28px;
+    min-width: 680px;
+    padding: 6px 4px 6px 0;
+  }
+  .bracket-round {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 0 0 148px;
+  }
+  .bracket-round-label {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1.5px;
+    font-size: 12px;
+    color: #7fa0c4;
+    margin-bottom: 12px;
+  }
+  .bracket-round-ddl {
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.5px;
+    color: #7fa0c4;
+    text-transform: uppercase;
+    margin: -8px 0 12px;
+  }
+  .bracket-round-ddl b { color: #ff6b6b; font-weight: 600; }
+  .bracket-match {
+    position: relative;
+    border: 1px solid rgba(90,170,255,0.22);
+    border-radius: 6px;
+    padding: 6px 9px;
+    background: rgba(255,255,255,0.02);
+    font-size: 12px;
+    margin: 6px 0;
+  }
+  .bracket-match .bteam {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 3px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #eaf4ff;
+    font-weight: 500;
+  }
+  .bracket-match .bteam.winner { color: #ffc98a; font-weight: bold; }
+  .bracket-match .bteam.tbd { color: #7c93ab; font-style: italic; font-weight: 400; }
+  .bracket-match .bteam .bscore { flex: 0 0 auto; color: #5aaaff; font-family: 'Bebas Neue', sans-serif; font-weight: 700; }
+  .bracket-match .bteam.winner .bscore { color: #ffc98a; }
+  .bracket-match .btag { font-size: 9px; color: #ff9d4d; text-align: center; margin-top: 2px; }
+
+  /* Lignes de connexion entre les colonnes */
+  .bracket-round:not(.bracket-round-final) .bracket-match::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -14px;
+    width: 14px;
+    height: 1px;
+    background: rgba(90,170,255,0.35);
+  }
+  .bracket-round:not(.bracket-round-r1) .bracket-match::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -14px;
+    width: 14px;
+    height: 1px;
+    background: rgba(90,170,255,0.35);
+  }
+  .bracket-round-final .bracket-match {
+    border-color: rgba(255,157,77,0.5);
   }
 
   .panel { display: none; margin-top: 22px; }
@@ -435,6 +579,7 @@
       <button class="nav-tab" data-tab="joueurs">Joueurs</button>
       <button class="nav-tab" data-tab="matchs">Matchs</button>
       <button class="nav-tab" data-tab="cartes">Cartes</button>
+      <button class="nav-tab" data-tab="coupe">Coupe</button>
     </div>
 
     <!-- CLASSEMENT -->
@@ -466,8 +611,18 @@
 
     <!-- MATCHS -->
     <div class="panel" id="panel-matchs">
-      <div class="journee-nav" id="journee-nav"></div>
-      <div id="journee-panels"></div>
+      <div class="phase-tabs" id="phase-tabs">
+        <button class="phase-tab active" data-phase="aller">Phase Aller</button>
+        <button class="phase-tab" data-phase="retour">Phase Retour</button>
+      </div>
+      <div class="phase-block active" id="phase-aller-block">
+        <div class="journee-nav" id="journee-nav"></div>
+        <div id="journee-panels"></div>
+      </div>
+      <div class="phase-block" id="phase-retour-block">
+        <div class="journee-nav" id="journee-nav-retour"></div>
+        <div id="journee-panels-retour"></div>
+      </div>
     </div>
 
     <!-- CARTES -->
@@ -499,12 +654,21 @@
       </div>
     </div>
 
+    <!-- COUPE -->
+    <div class="panel" id="panel-coupe">
+      <div id="cup-champion-banner"></div>
+      <div class="bracket-scroll">
+        <div class="bracket" id="bracket-grid"></div>
+      </div>
+    </div>
+
     <div class="footer-note">Ligue Pro Saison 8 · Phase Aller</div>
   </div>
 
 <script>
 // ---- EN-TÊTE : journée en cours + dernière mise à jour ----
-const CURRENT_JOURNEE = 13; // dernière journée entamée / en cours
+const CURRENT_JOURNEE_ALLER = 13; // dernière journée aller entamée / en cours
+const CURRENT_JOURNEE_RETOUR = 0; // 0 = phase retour pas encore commencée
 const LAST_UPDATE = new Date(2026, 8, 8, 2, 27); // à modifier à chaque mise à jour
 
 function formatFrenchDate(date, joiner) {
@@ -518,7 +682,6 @@ function formatFrenchDate(date, joiner) {
   return `${jourCap} ${jourNum} ${mois} ${annee} ${joiner} ${heure}:${min}`;
 }
 
-document.getElementById('badge-journee').textContent = `Journée ${CURRENT_JOURNEE} en cours`;
 document.getElementById('update-note').innerHTML =
   `Dernière mise à jour effectuée <b>${formatFrenchDate(LAST_UPDATE, 'à')}</b>`;
 
@@ -679,18 +842,21 @@ const results = {
 
 const FEDERATION_ZERO_POINTS = ["Marwen-Salah"];
 
-// (le forfait s'applique automatiquement jusqu'à la journée actuelle — CURRENT_JOURNEE,
+// (le forfait s'applique automatiquement jusqu'à la journée actuelle de chaque phase,
 // mise à jour à chaque nouveau résultat envoyé via WhatsApp)
 const ELIMINATED = ["Mounir"];
 
-function getMatchResult(home, away, journeeIndex) {
+function getMatchResult(home, away, journeeIndex, thresholdJournee) {
   const key = `${home}-${away}`;
   if (results[key]) return { score: results[key], forfeit: false };
-  const withinThreshold = journeeIndex + 1 <= CURRENT_JOURNEE;
+  const withinThreshold = journeeIndex + 1 <= thresholdJournee;
   if (withinThreshold && ELIMINATED.includes(home)) return { score: [0, 3], forfeit: true };
   if (withinThreshold && ELIMINATED.includes(away)) return { score: [3, 0], forfeit: true };
   return { score: null, forfeit: false };
 }
+
+// ---- PHASE RETOUR : mêmes paires que l'aller, domicile/extérieur inversés ----
+const scheduleRetour = schedule.map(day => day.map(([home, away]) => [away, home]));
 
 // Date limite (DDL) de chaque journée : J1 = jeudi 27 août 2026, 02:00, puis +24h par journée.
 
@@ -703,26 +869,31 @@ function computeStandings() {
   const stats = {};
   PLAYERS.forEach(nom => { stats[nom] = { nom, mj: 0, v: 0, n: 0, d: 0, gf: 0, ga: 0 }; });
 
-  schedule.forEach((day, i) => {
-    day.forEach(([home, away]) => {
-      const key = `${home}-${away}`;
-      const { score } = getMatchResult(home, away, i);
-      if (!score) return;
-      const [sh, sa] = score;
-      const isZero = FEDERATION_ZERO_POINTS.includes(key);
+  function processSchedule(sched, threshold) {
+    sched.forEach((day, i) => {
+      day.forEach(([home, away]) => {
+        const key = `${home}-${away}`;
+        const { score } = getMatchResult(home, away, i, threshold);
+        if (!score) return;
+        const [sh, sa] = score;
+        const isZero = FEDERATION_ZERO_POINTS.includes(key);
 
-      // Décision fédération à 0 point : le match compte comme "joué" (MJ+1)
-      // mais n'affecte ni le nombre de V/N/D, ni les buts.
-      stats[home].mj++; stats[away].mj++;
-      if (isZero) return;
+        // Décision fédération à 0 point : le match compte comme "joué" (MJ+1)
+        // mais n'affecte ni le nombre de V/N/D, ni les buts.
+        stats[home].mj++; stats[away].mj++;
+        if (isZero) return;
 
-      stats[home].gf += sh; stats[home].ga += sa;
-      stats[away].gf += sa; stats[away].ga += sh;
-      if (sh > sa) { stats[home].v++; stats[away].d++; }
-      else if (sh < sa) { stats[away].v++; stats[home].d++; }
-      else { stats[home].n++; stats[away].n++; }
+        stats[home].gf += sh; stats[home].ga += sa;
+        stats[away].gf += sa; stats[away].ga += sh;
+        if (sh > sa) { stats[home].v++; stats[away].d++; }
+        else if (sh < sa) { stats[away].v++; stats[home].d++; }
+        else { stats[home].n++; stats[away].n++; }
+      });
     });
-  });
+  }
+
+  processSchedule(schedule, CURRENT_JOURNEE_ALLER);       // Phase Aller
+  processSchedule(scheduleRetour, CURRENT_JOURNEE_RETOUR); // Phase Retour
 
   return Object.values(stats);
 }
@@ -751,6 +922,7 @@ playerNames.forEach((nom, i) => {
   playersGrid.appendChild(div);
 });
 
+// Un REPORTS sans "phase" concerne l'Aller (rétrocompatible). Ajouter phase: "retour" pour un report en phase retour.
 const REPORTS = [
   { key: "Moataz-Mounir", from: 1, to: 2 },
   { key: "Wael-Firas", from: 1, to: 2 },
@@ -783,115 +955,149 @@ function formatDDL(date) {
 }
 
 
-const matchdays = schedule.map((day, i) => ({
-  journee: i + 1,
-  ddl: new Date(DDL_BASE.getTime() + i * 24 * 3600 * 1000),
-  matches: day.map(([home, away]) => {
-    const key = `${home}-${away}`;
-    const { score, forfeit } = getMatchResult(home, away, i);
-    const rep = REPORTS.find(rp => rp.key === key && rp.from === i);
-    // Un match reporté mais déjà joué (ou forfait) garde son score dans SA journée officielle.
-    return {
+function buildMatchdays(sched, threshold, reportsForPhase) {
+  const mds = sched.map((day, i) => ({
+    journee: i + 1,
+    ddl: new Date(DDL_BASE.getTime() + i * 24 * 3600 * 1000),
+    matches: day.map(([home, away]) => {
+      const key = `${home}-${away}`;
+      const { score, forfeit } = getMatchResult(home, away, i, threshold);
+      const rep = reportsForPhase.find(rp => rp.key === key && rp.from === i);
+      // Un match reporté mais déjà joué (ou forfait) garde son score dans SA journée officielle.
+      return {
+        home, away,
+        scoreHome: score ? score[0] : null,
+        scoreAway: score ? score[1] : null,
+        reportedTo: (rep && !score) ? rep.to : null,
+        wasReported: !!rep,
+        forfeit,
+        zeroPoints: FEDERATION_ZERO_POINTS.includes(key),
+      };
+    })
+  }));
+
+  // Les matchs reportés ET pas encore joués (ni en forfait) apparaissent aussi dans le programme
+  // de leur journée cible (avec étiquette "Reporté"). Une fois le score connu,
+  // le résultat reste uniquement dans la journée officielle et n'est plus dupliqué ici.
+  reportsForPhase.forEach(rep => {
+    const key = rep.key;
+    const { score } = getMatchResult(...key.split('-'), rep.from, threshold);
+    if (score) return; // déjà joué (ou forfait) : reste dans sa journée officielle uniquement
+    const [home, away] = key.split('-');
+    mds[rep.to].matches.push({
       home, away,
-      scoreHome: score ? score[0] : null,
-      scoreAway: score ? score[1] : null,
-      reportedTo: (rep && !score) ? rep.to : null,
-      wasReported: !!rep,
-      forfeit,
-      zeroPoints: FEDERATION_ZERO_POINTS.includes(key),
-    };
-  })
-}));
-
-// Les matchs reportés ET pas encore joués (ni en forfait) apparaissent aussi dans le programme
-// de leur journée cible (avec étiquette "Reporté"). Une fois le score connu,
-// le résultat reste uniquement dans la journée officielle et n'est plus dupliqué ici.
-REPORTS.forEach(rep => {
-  const key = rep.key;
-  const { score } = getMatchResult(...key.split('-'), rep.from);
-  if (score) return; // déjà joué (ou forfait) : reste dans sa journée officielle uniquement
-  const [home, away] = key.split('-');
-  matchdays[rep.to].matches.push({
-    home, away,
-    scoreHome: null,
-    scoreAway: null,
-    reportedFrom: rep.from,
+      scoreHome: null,
+      scoreAway: null,
+      reportedFrom: rep.from,
+    });
   });
-});
+
+  return mds;
+}
+
+const matchdaysAller = buildMatchdays(schedule, CURRENT_JOURNEE_ALLER, REPORTS.filter(r => !r.phase || r.phase === 'aller'));
+const matchdaysRetour = buildMatchdays(scheduleRetour, CURRENT_JOURNEE_RETOUR, REPORTS.filter(r => r.phase === 'retour'));
 
 
-const journeeNav = document.getElementById('journee-nav');
-const journeePanels = document.getElementById('journee-panels');
-// Une journée est "réglée" quand chacun de ses matchs a un score OU a été reporté ailleurs.
-// On part de CURRENT_JOURNEE et on avance tant que la journée est entièrement réglée,
-// pour tomber sur la vraie journée "active" (celle où il reste des matchs à jouer).
 function isJourneeResolved(jd) {
   return jd.matches.every(m => m.scoreHome !== null || m.reportedTo != null);
 }
-let defaultJourneeIdx = Math.min(Math.max(CURRENT_JOURNEE - 1, 0), matchdays.length - 1);
-while (defaultJourneeIdx < matchdays.length - 1 && isJourneeResolved(matchdays[defaultJourneeIdx])) {
-  defaultJourneeIdx++;
+function isPhaseResolved(mds) {
+  return mds.every(isJourneeResolved);
+}
+function computeDefaultIdx(mds, currentJournee) {
+  let idx = Math.min(Math.max(currentJournee - 1, 0), mds.length - 1);
+  while (idx < mds.length - 1 && isJourneeResolved(mds[idx])) idx++;
+  return idx;
 }
 
-matchdays.forEach((jd, idx) => {
-  const btn = document.createElement('button');
-  btn.className = 'journee-btn' + (idx === defaultJourneeIdx ? ' active' : '');
-  btn.textContent = `J${jd.journee}`;
-  btn.dataset.journee = idx;
-  journeeNav.appendChild(btn);
+// La phase "réellement" active : Retour seulement si l'Aller est entièrement réglé.
+const alletTermine = isPhaseResolved(matchdaysAller);
+const activePhase = alletTermine ? 'retour' : 'aller';
+const defaultIdxAller = computeDefaultIdx(matchdaysAller, CURRENT_JOURNEE_ALLER);
+const defaultIdxRetour = computeDefaultIdx(matchdaysRetour, CURRENT_JOURNEE_RETOUR);
 
-  const panel = document.createElement('div');
-  panel.className = 'journee-panel' + (idx === defaultJourneeIdx ? ' active' : '');
-  panel.id = `journee-${idx}`;
+document.getElementById('badge-journee').textContent = activePhase === 'retour'
+  ? `Retour — Journée ${defaultIdxRetour + 1} en cours`
+  : `Aller — Journée ${defaultIdxAller + 1} en cours`;
+const footerNoteEl = document.querySelector('.footer-note');
+if (footerNoteEl) footerNoteEl.textContent = `Ligue Pro Saison 8 · Phase ${activePhase === 'retour' ? 'Retour' : 'Aller'}`;
 
-  const header = document.createElement('div');
-  header.className = 'journee-header';
-  header.innerHTML = `<span class="journee-title">JOURNÉE ${jd.journee}</span><span class="journee-ddl">DDL : <b>${formatDDL(jd.ddl)}</b></span>`;
-  panel.appendChild(header);
+function renderJourneeTabs(mds, navEl, panelsEl, defaultIdx) {
+  mds.forEach((jd, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'journee-btn' + (idx === defaultIdx ? ' active' : '');
+    btn.textContent = `J${jd.journee}`;
+    btn.dataset.journee = idx;
+    navEl.appendChild(btn);
 
-  jd.matches.forEach(match => {
-    const row = document.createElement('div');
-    row.className = 'match-row';
-    const homeTxt = match.home || 'À définir';
-    const awayTxt = match.away || 'À définir';
-    let scoreTxt;
-    if (match.reportedTo !== null && match.reportedTo !== undefined) {
-      scoreTxt = `Reporté → J${match.reportedTo + 1}`;
-    } else if (match.scoreHome !== null && match.scoreAway !== null) {
-      scoreTxt = `${match.scoreHome} - ${match.scoreAway}`;
-    } else {
-      scoreTxt = '- : -';
-    }
-    const playedButReported = match.wasReported && match.scoreHome !== null;
-    const reportTag = match.zeroPoints
-      ? ` <span class="report-tag forfeit">(décision fédération — 0 pt)</span>`
-      : (match.reportedFrom !== undefined)
-      ? ` <span class="report-tag">(reporté J${match.reportedFrom + 1})</span>`
-      : (match.forfeit ? ` <span class="report-tag forfeit">(forfait — éliminé)</span>`
-        : (playedButReported ? ` <span class="report-tag">(reporté)</span>` : ''));
-    row.innerHTML = `
-      <span class="match-team${match.home ? '' : ' tbd'}">${homeTxt}</span>
-      <span class="match-score${match.reportedTo != null ? ' reported' : ''}">${scoreTxt}</span>
-      <span class="match-team away${match.away ? '' : ' tbd'}">${awayTxt}${reportTag}</span>
-    `;
-    panel.appendChild(row);
+    const panel = document.createElement('div');
+    panel.className = 'journee-panel' + (idx === defaultIdx ? ' active' : '');
+    panel.id = `${panelsEl.id}-${idx}`;
+
+    const header = document.createElement('div');
+    header.className = 'journee-header';
+    header.innerHTML = `<span class="journee-title">JOURNÉE ${jd.journee}</span><span class="journee-ddl">DDL : <b>${formatDDL(jd.ddl)}</b></span>`;
+    panel.appendChild(header);
+
+    jd.matches.forEach(match => {
+      const row = document.createElement('div');
+      row.className = 'match-row';
+      const homeTxt = match.home || 'À définir';
+      const awayTxt = match.away || 'À définir';
+      let scoreTxt;
+      if (match.reportedTo !== null && match.reportedTo !== undefined) {
+        scoreTxt = `Reporté → J${match.reportedTo + 1}`;
+      } else if (match.scoreHome !== null && match.scoreAway !== null) {
+        scoreTxt = `${match.scoreHome} - ${match.scoreAway}`;
+      } else {
+        scoreTxt = '- : -';
+      }
+      const playedButReported = match.wasReported && match.scoreHome !== null;
+      const reportTag = match.zeroPoints
+        ? ` <span class="report-tag forfeit">(décision fédération — 0 pt)</span>`
+        : (match.reportedFrom !== undefined)
+        ? ` <span class="report-tag">(reporté J${match.reportedFrom + 1})</span>`
+        : (match.forfeit ? ` <span class="report-tag forfeit">(forfait — éliminé)</span>`
+          : (playedButReported ? ` <span class="report-tag">(reporté)</span>` : ''));
+      row.innerHTML = `
+        <span class="match-team${match.home ? '' : ' tbd'}">${homeTxt}</span>
+        <span class="match-score${match.reportedTo != null ? ' reported' : ''}">${scoreTxt}</span>
+        <span class="match-team away${match.away ? '' : ' tbd'}">${awayTxt}${reportTag}</span>
+      `;
+      panel.appendChild(row);
+    });
+
+    panelsEl.appendChild(panel);
   });
 
-  journeePanels.appendChild(panel);
-});
+  const activeBtn = navEl.querySelector('.journee-btn.active');
+  if (activeBtn) activeBtn.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
 
-// Amène l'onglet de la journée en cours dans la vue (la barre défile horizontalement)
-const activeBtn = journeeNav.querySelector('.journee-btn.active');
-if (activeBtn) activeBtn.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
+  navEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.journee-btn');
+    if (!btn) return;
+    navEl.querySelectorAll('.journee-btn').forEach(b => b.classList.remove('active'));
+    panelsEl.querySelectorAll('.journee-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`${panelsEl.id}-${btn.dataset.journee}`).classList.add('active');
+  });
+}
 
+renderJourneeTabs(matchdaysAller, document.getElementById('journee-nav'), document.getElementById('journee-panels'), defaultIdxAller);
+renderJourneeTabs(matchdaysRetour, document.getElementById('journee-nav-retour'), document.getElementById('journee-panels-retour'), defaultIdxRetour);
 
-journeeNav.addEventListener('click', (e) => {
-  const btn = e.target.closest('.journee-btn');
-  if (!btn) return;
-  document.querySelectorAll('.journee-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.journee-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(`journee-${btn.dataset.journee}`).classList.add('active');
+// ---- Bascule entre les deux blocs de phase (Aller / Retour) ----
+const phaseAllerBlock = document.getElementById('phase-aller-block');
+const phaseRetourBlock = document.getElementById('phase-retour-block');
+function setPhaseTab(phase) {
+  document.querySelectorAll('.phase-tab').forEach(t => t.classList.toggle('active', t.dataset.phase === phase));
+  phaseAllerBlock.classList.toggle('active', phase === 'aller');
+  phaseRetourBlock.classList.toggle('active', phase === 'retour');
+}
+setPhaseTab(activePhase);
+document.querySelectorAll('.phase-tab').forEach(tab => {
+  tab.addEventListener('click', () => setPhaseTab(tab.dataset.phase));
 });
 
 
@@ -936,6 +1142,112 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
     tab.classList.add('active');
     document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
   });
+});
+
+// ---- COUPE DE MI-SAISON : élimination directe, tirage aléatoire fixe ----
+// Tirage effectué le 3 septembre 2026 : 14 joueurs + 2 "byes" pour compléter à 16 places.
+const CUP_DRAW = ["Marwen","Mounir",null,"Moataz","Omar","Salah","Wael","Nouigues","Fehmi","Amen","Ala",null,"Louay","Mahdi","Aziz","Firas"];
+
+// Résultats de la coupe : clé = round-numéroMatch (ex. R1 pour huitièmes, QF, SF, F), valeur = [scoreA, scoreB]
+const CUP_RESULTS = {
+};
+
+const CUP_ROUND_LABELS = { R1: 'HUITIÈMES', QF: 'QUARTS', SF: 'DEMI-FINALES', F: 'FINALE' };
+const CUP_ROUND_DDL = { R1: new Date(2026, 8, 11, 2, 0) }; // Vendredi 11 septembre 2026, 02h
+const CUP_ROUND_ORDER = ['R1', 'QF', 'SF', 'F'];
+
+function computeCupBracket(draw, results) {
+  const rounds = []; // [{ label, matches: [{key, a, b, score, winner, bye, tbd}] }]
+  let slots = draw.slice(); // round 0 : noms ou null (bye d'origine)
+  let roundIdx = 0;
+  while (slots.length > 1) {
+    const roundLabel = CUP_ROUND_ORDER[roundIdx];
+    const matches = [];
+    const nextSlots = [];
+    for (let i = 0; i < slots.length; i += 2) {
+      const a = slots[i], b = slots[i + 1];
+      const key = `${roundLabel}-${i / 2 + 1}`;
+
+      // "undefined" = adversaire pas encore connu (match parent non résolu) — différent de
+      // "null" qui ne peut apparaître qu'au tour 0 et signifie un vrai bye de tirage.
+      if (a === undefined || b === undefined) {
+        matches.push({ key, a: a === undefined ? null : a, b: b === undefined ? null : b, winner: null, bye: false, tbd: true });
+        nextSlots.push(undefined);
+        continue;
+      }
+      if (a === null && b === null) {
+        matches.push({ key, a: null, b: null, winner: null, bye: false, tbd: true });
+        nextSlots.push(undefined);
+        continue;
+      }
+      if (a === null || b === null) {
+        const winner = a === null ? b : a;
+        matches.push({ key, a, b, winner, bye: true, score: null });
+        nextSlots.push(winner);
+        continue;
+      }
+      const score = results[key] || null;
+      let winner = null;
+      if (score) winner = score[0] > score[1] ? a : (score[1] > score[0] ? b : null);
+      matches.push({ key, a, b, score, winner, bye: false });
+      nextSlots.push(winner === null ? undefined : winner);
+    }
+    rounds.push({ label: roundLabel, matches });
+    slots = nextSlots;
+    roundIdx++;
+  }
+  return { rounds, champion: slots[0] || null };
+}
+
+const cupBracket = computeCupBracket(CUP_DRAW, CUP_RESULTS);
+const bracketGridEl = document.getElementById('bracket-grid');
+const cupChampionEl = document.getElementById('cup-champion-banner');
+
+if (cupBracket.champion) {
+  cupChampionEl.innerHTML = `<div class="cup-champion-banner">🏆 CHAMPION DE LA COUPE : ${cupBracket.champion}</div>`;
+}
+
+function renderBracketTeam(name, isWinner, isTbd, score) {
+  const cls = 'bteam' + (isTbd ? ' tbd' : (isWinner ? ' winner' : ''));
+  const label = name || 'À déterminer';
+  const scoreTxt = (score !== undefined && score !== null) ? `<span class="bscore">${score}</span>` : '';
+  return `<div class="${cls}"><span>${label}</span>${scoreTxt}</div>`;
+}
+
+cupBracket.rounds.forEach((round, roundIdx) => {
+  const col = document.createElement('div');
+  col.className = 'bracket-round' + (roundIdx === 0 ? ' bracket-round-r1' : '') + (roundIdx === cupBracket.rounds.length - 1 ? ' bracket-round-final' : '');
+
+  const label = document.createElement('div');
+  label.className = 'bracket-round-label';
+  label.textContent = CUP_ROUND_LABELS[round.label] || round.label;
+  col.appendChild(label);
+
+  if (CUP_ROUND_DDL[round.label]) {
+    const ddl = document.createElement('div');
+    ddl.className = 'bracket-round-ddl';
+    ddl.innerHTML = `DDL : <b>${formatDDL(CUP_ROUND_DDL[round.label])}</b>`;
+    col.appendChild(ddl);
+  }
+
+  round.matches.forEach(m => {
+    const box = document.createElement('div');
+    box.className = 'bracket-match';
+    if (m.tbd) {
+      box.innerHTML = renderBracketTeam(m.a, false, m.a === null, null) + renderBracketTeam(m.b, false, m.b === null, null);
+    } else if (m.bye) {
+      box.innerHTML = renderBracketTeam(m.winner, true, false, null) + `<div class="btag">Exempt (bye)</div>`;
+    } else {
+      const scoreA = m.score ? m.score[0] : null;
+      const scoreB = m.score ? m.score[1] : null;
+      box.innerHTML =
+        renderBracketTeam(m.a, m.winner === m.a, false, scoreA) +
+        renderBracketTeam(m.b, m.winner === m.b, false, scoreB);
+    }
+    col.appendChild(box);
+  });
+
+  bracketGridEl.appendChild(col);
 });
 </script>
 
