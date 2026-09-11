@@ -375,6 +375,165 @@
     vertical-align: middle;
   }
 
+  /* Stats panel */
+  .stats-summary {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .stat-chip {
+    border: 1px solid rgba(90,170,255,0.3);
+    border-radius: 20px;
+    background: rgba(47,143,255,0.08);
+    padding: 6px 14px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: #a9cbea;
+    text-transform: uppercase;
+  }
+  .stat-chip b { color: #ffffff; font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; }
+
+  .stats-subtitle {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    font-size: 14px;
+    color: #ff9d4d;
+    text-transform: uppercase;
+    margin: 22px 0 10px;
+  }
+
+  .awards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .award-card {
+    position: relative;
+    border: 1px solid rgba(90,170,255,0.25);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow: hidden;
+  }
+  .award-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #2f8fff, #7fc4ff);
+  }
+  .award-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
+  .award-label {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1.5px;
+    font-size: 10.5px;
+    color: #7fa0c4;
+    text-transform: uppercase;
+  }
+  .award-player {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #eaf4ff;
+  }
+  .award-value {
+    font-family: 'Anton', sans-serif;
+    font-size: 13px;
+    color: #5aaaff;
+    letter-spacing: 0.3px;
+  }
+  .award-sub {
+    font-size: 10px;
+    color: #5c7690;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .award-card.empty { justify-content: center; align-items: center; color: #5c7690; font-size: 11px; }
+
+  /* Stats : graphiques en barres */
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 6px;
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 16px 70px 1fr 52px;
+    align-items: center;
+    gap: 8px;
+  }
+  .bar-rank {
+    font-family: 'Anton', sans-serif;
+    font-size: 11px;
+    color: #5aaaff;
+    text-align: center;
+  }
+  .bar-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #eaf4ff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bar-track {
+    height: 14px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.05);
+    overflow: hidden;
+    display: flex;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #2f8fff, #7fc4ff);
+    transition: width 0.4s ease;
+  }
+  .bar-fill.defense { background: linear-gradient(90deg, #ff9d4d, #ffc98a); border-radius: 7px; }
+  .bar-fill.clean { background: linear-gradient(90deg, #2f8fff, #ffc98a); border-radius: 7px; }
+  .bar-track.stacked-track .bar-fill { border-radius: 0; }
+  .bar-track.stacked-track .bar-fill.v { background: #2f8fff; }
+  .bar-track.stacked-track .bar-fill.n { background: #5c7690; }
+  .bar-track.stacked-track .bar-fill.d { background: #ff6b6b; }
+  .bar-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: #a9cbea;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .chart-legend .dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  .dot-v { background: #2f8fff; }
+  .dot-n { background: #5c7690; }
+  .dot-d { background: #ff6b6b; }
+
+  @media (min-width: 700px) {
+    .bar-row { grid-template-columns: 20px 100px 1fr 60px; }
+  }
+
   /* Matchs panel */
   .journee-nav {
     display: flex;
@@ -564,6 +723,7 @@
 
   @media (max-width: 420px) {
     .players-grid { grid-template-columns: 1fr; }
+    .awards-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -585,7 +745,7 @@
 
     <div class="nav-tabs">
       <button class="nav-tab active" data-tab="classement">Classement</button>
-      <button class="nav-tab" data-tab="joueurs">Joueurs</button>
+      <button class="nav-tab" data-tab="stats">Stats</button>
       <button class="nav-tab" data-tab="matchs">Matchs</button>
       <button class="nav-tab" data-tab="cartes">Cartes</button>
       <button class="nav-tab" data-tab="coupe">Coupe</button>
@@ -613,9 +773,29 @@
       </div>
     </div>
 
-    <!-- JOUEURS -->
-    <div class="panel" id="panel-joueurs">
-      <div class="players-grid" id="players-grid"></div>
+    <!-- STATS -->
+    <div class="panel" id="panel-stats">
+      <div class="stats-summary" id="stats-summary"></div>
+
+      <div class="stats-subtitle">🏅 Récompenses individuelles</div>
+      <div class="awards-grid" id="awards-grid"></div>
+
+      <div class="stats-subtitle">🎯 Top buteurs</div>
+      <div class="bar-chart" id="chart-buteurs"></div>
+
+      <div class="stats-subtitle">🛡️ Meilleures défenses</div>
+      <div class="bar-chart" id="chart-defense"></div>
+
+      <div class="stats-subtitle">🧤 Clean sheets</div>
+      <div class="bar-chart" id="chart-cleansheets"></div>
+
+      <div class="stats-subtitle">📈 Forme (victoires · nuls · défaites)</div>
+      <div class="chart-legend">
+        <span class="legend-chip"><span class="dot dot-v"></span>Victoires</span>
+        <span class="legend-chip"><span class="dot dot-n"></span>Nuls</span>
+        <span class="legend-chip"><span class="dot dot-d"></span>Défaites</span>
+      </div>
+      <div class="bar-chart" id="chart-forme"></div>
     </div>
 
     <!-- MATCHS -->
@@ -874,11 +1054,20 @@ const scheduleRetour = schedule.map(day => day.map(([home, away]) => [away, home
 // ---- LISTE DES JOUEURS (source unique) ----
 const PLAYERS = ["Nouigues","Omar","Mahdi","Wael","Ala","Aziz","Firas","Amen","Fehmi","Salah","Mounir","Marwen","Moataz","Louay"];
 
-// ---- CLASSEMENT : calculé automatiquement à partir de schedule + results ----
-// (plus de tableau "raw" à maintenir à la main : tout part des scores bruts.)
-function computeStandings() {
+// ---- STATS : calculées automatiquement à partir de schedule + results ----
+// (source unique de vérité : classement ET onglet Stats partagent ce même calcul,
+// donc tout se met à jour automatiquement dès qu'un résultat est ajouté via WhatsApp.)
+function computeFullStats() {
   const stats = {};
-  PLAYERS.forEach(nom => { stats[nom] = { nom, mj: 0, v: 0, n: 0, d: 0, gf: 0, ga: 0 }; });
+  PLAYERS.forEach(nom => { stats[nom] = { nom, mj: 0, v: 0, n: 0, d: 0, gf: 0, ga: 0, cs: 0, bestWin: null }; });
+
+  function registerWin(winner, loser, scoreWinner, scoreLoser) {
+    const margin = scoreWinner - scoreLoser;
+    const p = stats[winner];
+    if (!p.bestWin || margin > p.bestWin.margin) {
+      p.bestWin = { margin, score: `${scoreWinner}-${scoreLoser}`, opp: loser };
+    }
+  }
 
   function processSchedule(sched, threshold) {
     sched.forEach((day, i) => {
@@ -890,14 +1079,17 @@ function computeStandings() {
         const isZero = FEDERATION_ZERO_POINTS.includes(key);
 
         // Décision fédération à 0 point : le match compte comme "joué" (MJ+1)
-        // mais n'affecte ni le nombre de V/N/D, ni les buts.
+        // mais n'affecte ni V/N/D, ni les buts, ni les clean sheets.
         stats[home].mj++; stats[away].mj++;
         if (isZero) return;
 
         stats[home].gf += sh; stats[home].ga += sa;
         stats[away].gf += sa; stats[away].ga += sh;
-        if (sh > sa) { stats[home].v++; stats[away].d++; }
-        else if (sh < sa) { stats[away].v++; stats[home].d++; }
+        if (sa === 0) stats[home].cs++;
+        if (sh === 0) stats[away].cs++;
+
+        if (sh > sa) { stats[home].v++; stats[away].d++; registerWin(home, away, sh, sa); }
+        else if (sh < sa) { stats[away].v++; stats[home].d++; registerWin(away, home, sa, sh); }
         else { stats[home].n++; stats[away].n++; }
       });
     });
@@ -906,12 +1098,18 @@ function computeStandings() {
   processSchedule(schedule, CURRENT_JOURNEE_ALLER);       // Phase Aller
   processSchedule(scheduleRetour, CURRENT_JOURNEE_RETOUR); // Phase Retour
 
-  return Object.values(stats);
+  return Object.values(stats).map(p => ({
+    ...p,
+    db: p.gf - p.ga,
+    pts: p.v * 3 + p.n,
+    csPct: p.mj > 0 ? (p.cs / p.mj * 100) : 0,
+  }));
 }
 
-const players = computeStandings().map(p => ({
-  ...p, db: p.gf - p.ga, pts: p.v * 3 + p.n
-}));
+const fullStats = computeFullStats();
+
+// ---- CLASSEMENT ----
+const players = fullStats.slice();
 players.sort((a, b) => b.pts - a.pts || b.db - a.db || b.gf - a.gf);
 
 const tbody = document.getElementById('tbody');
@@ -922,15 +1120,127 @@ players.forEach((p, i) => {
   tbody.appendChild(tr);
 });
 
-// ---- JOUEURS : liste des 14 noms ----
-const playerNames = PLAYERS.slice().sort((a, b) => a.localeCompare(b, 'fr'));
-const playersGrid = document.getElementById('players-grid');
-playerNames.forEach((nom, i) => {
+// ---- STATS : résumé de la ligue ----
+const totalMatches = Math.round(fullStats.reduce((s, p) => s + p.mj, 0) / 2);
+const totalGoals = fullStats.reduce((s, p) => s + p.gf, 0);
+const avgGoals = totalMatches > 0 ? (totalGoals / totalMatches) : 0;
+
+document.getElementById('stats-summary').innerHTML = `
+  <div class="stat-chip"><b>${totalMatches}</b> matchs joués</div>
+  <div class="stat-chip"><b>${totalGoals}</b> buts marqués</div>
+  <div class="stat-chip"><b>${avgGoals.toFixed(1)}</b> buts / match</div>
+`;
+
+// ---- STATS : récompenses individuelles ----
+const maxMJ = fullStats.reduce((m, p) => Math.max(m, p.mj), 0);
+const minMatches = Math.max(3, Math.floor(maxMJ / 2)); // seuil pour les stats "de taux" (défense, clean sheets %)
+
+function topBy(arr, key, filterFn) {
+  const pool = (filterFn ? arr.filter(filterFn) : arr).filter(p => p.mj > 0);
+  if (!pool.length) return null;
+  return pool.reduce((best, p) => (p[key] > best[key] ? p : best), pool[0]);
+}
+function bottomBy(arr, key, filterFn) {
+  const pool = (filterFn ? arr.filter(filterFn) : arr).filter(p => p.mj > 0);
+  if (!pool.length) return null;
+  return pool.reduce((best, p) => (p[key] < best[key] ? p : best), pool[0]);
+}
+
+const qualified = fullStats.filter(p => p.mj >= minMatches);
+
+const bestAttack = topBy(fullStats, 'gf');
+const bestDefense = bottomBy(qualified.length ? qualified : fullStats, 'ga');
+const mostCleanSheets = topBy(fullStats, 'cs');
+const bestCleanSheetPct = topBy(qualified.length ? qualified : fullStats, 'csPct');
+const mostWins = topBy(fullStats, 'v');
+const ironMan = topBy(fullStats, 'mj');
+let biggestWinPlayer = null;
+fullStats.forEach(p => {
+  if (p.bestWin && (!biggestWinPlayer || p.bestWin.margin > biggestWinPlayer.bestWin.margin)) biggestWinPlayer = p;
+});
+const bestRatio = topBy(fullStats.map(p => ({ ...p, ratio: p.mj > 0 ? p.pts / p.mj : 0 })), 'ratio');
+
+const awards = [
+  bestAttack && { icon: '🎯', label: 'Meilleure attaque', player: bestAttack.nom, value: `${bestAttack.gf} buts marqués` },
+  bestDefense && { icon: '🛡️', label: 'Meilleure défense', player: bestDefense.nom, value: `${bestDefense.ga} buts encaissés`, sub: `sur ${bestDefense.mj} matchs` },
+  mostCleanSheets && { icon: '🧤', label: 'Plus de clean sheets', player: mostCleanSheets.nom, value: `${mostCleanSheets.cs} clean sheets` },
+  bestCleanSheetPct && { icon: '🔒', label: 'Meilleur % clean sheets', player: bestCleanSheetPct.nom, value: `${bestCleanSheetPct.csPct.toFixed(0)}%`, sub: `sur ${bestCleanSheetPct.mj} matchs` },
+  mostWins && { icon: '🏆', label: 'Plus de victoires', player: mostWins.nom, value: `${mostWins.v} victoires` },
+  bestRatio && { icon: '📈', label: 'Meilleur ratio pts/match', player: bestRatio.nom, value: `${bestRatio.ratio.toFixed(2)} pt/match` },
+  biggestWinPlayer && { icon: '💥', label: 'Plus large victoire', player: biggestWinPlayer.nom, value: `${biggestWinPlayer.bestWin.score} vs ${biggestWinPlayer.bestWin.opp}`, sub: `écart de ${biggestWinPlayer.bestWin.margin} buts` },
+  ironMan && { icon: '⚙️', label: "L'increvable", player: ironMan.nom, value: `${ironMan.mj} matchs joués` },
+].filter(Boolean);
+
+const awardsGrid = document.getElementById('awards-grid');
+awards.forEach(a => {
   const div = document.createElement('div');
-  div.className = 'player-card';
-  const elimTag = ELIMINATED.includes(nom) ? ' <span class="elim-tag">Éliminé</span>' : '';
-  div.innerHTML = `<span class="player-num">${String(i+1).padStart(2,'0')}</span><span class="player-name">${nom}${elimTag}</span>`;
-  playersGrid.appendChild(div);
+  div.className = 'award-card';
+  div.innerHTML = `
+    <div class="award-icon">${a.icon}</div>
+    <div class="award-label">${a.label}</div>
+    <div class="award-player">${a.player}</div>
+    <div class="award-value">${a.value}</div>
+    ${a.sub ? `<div class="award-sub">${a.sub}</div>` : ''}
+  `;
+  awardsGrid.appendChild(div);
+});
+
+// ---- STATS : graphiques en barres ----
+function renderBarChart(containerId, rows, opts = {}) {
+  const el = document.getElementById(containerId);
+  const maxVal = Math.max(...rows.map(r => r.barValue), 1);
+  rows.forEach((r, i) => {
+    const pct = Math.max(4, Math.round((r.barValue / maxVal) * 100));
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `
+      <span class="bar-rank">${i + 1}</span>
+      <span class="bar-name">${r.nom}</span>
+      <div class="bar-track"><div class="bar-fill${opts.fillClass ? ' ' + opts.fillClass : ''}" style="width:${pct}%"></div></div>
+      <span class="bar-value">${r.display}</span>
+    `;
+    el.appendChild(row);
+  });
+}
+
+// Top buteurs (top 8)
+const topButeurs = fullStats.slice().filter(p => p.mj > 0).sort((a, b) => b.gf - a.gf).slice(0, 8)
+  .map(p => ({ nom: p.nom, barValue: p.gf, display: `${p.gf} buts` }));
+renderBarChart('chart-buteurs', topButeurs);
+
+// Meilleures défenses (top 8, moins de buts encaissés) — barre inversée : plus la barre est longue, meilleure est la défense
+const defensePool = fullStats.filter(p => p.mj >= minMatches);
+const maxGA = Math.max(...defensePool.map(p => p.ga), 1);
+const topDefense = defensePool.slice().sort((a, b) => a.ga - b.ga).slice(0, 8)
+  .map(p => ({ nom: p.nom, barValue: maxGA - p.ga + 1, display: `${p.ga} encaissés` }));
+renderBarChart('chart-defense', topDefense, { fillClass: 'defense' });
+
+// Clean sheets (top 8)
+const topCleanSheets = fullStats.slice().filter(p => p.mj > 0).sort((a, b) => b.cs - a.cs).slice(0, 8)
+  .map(p => ({ nom: p.nom, barValue: p.cs, display: `${p.cs} (${p.csPct.toFixed(0)}%)` }));
+renderBarChart('chart-cleansheets', topCleanSheets, { fillClass: 'clean' });
+
+// Forme V/N/D — tous les joueurs, triés par points (comme le classement)
+const statsSorted = fullStats.slice().sort((a, b) => b.pts - a.pts || b.db - a.db || b.gf - a.gf);
+const formeEl = document.getElementById('chart-forme');
+statsSorted.forEach((p, i) => {
+  const total = p.v + p.n + p.d;
+  const vPct = total > 0 ? (p.v / total) * 100 : 0;
+  const nPct = total > 0 ? (p.n / total) * 100 : 0;
+  const dPct = total > 0 ? (p.d / total) * 100 : 0;
+  const row = document.createElement('div');
+  row.className = 'bar-row';
+  row.innerHTML = `
+    <span class="bar-rank">${i + 1}</span>
+    <span class="bar-name">${p.nom}</span>
+    <div class="bar-track stacked-track">
+      <div class="bar-fill v" style="width:${vPct}%"></div>
+      <div class="bar-fill n" style="width:${nPct}%"></div>
+      <div class="bar-fill d" style="width:${dPct}%"></div>
+    </div>
+    <span class="bar-value">${p.pts} pts</span>
+  `;
+  formeEl.appendChild(row);
 });
 
 // Un REPORTS sans "phase" concerne l'Aller (rétrocompatible). Ajouter phase: "retour" pour un report en phase retour.
