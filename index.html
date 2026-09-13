@@ -1264,6 +1264,7 @@ const REPORTS = [
 
 
 const DDL_BASE = new Date(2026, 7, 27, 2, 0); // mois 7 = août (index 0-based)
+const DDL_BASE_RETOUR = new Date(2026, 8, 15, 2, 0); // mois 8 = septembre : J1 retour = mardi 15 septembre 2026, 02h, puis +24h par journée
 function formatDDL(date) {
   const jour = date.toLocaleDateString('fr-FR', { weekday: 'long' });
   const jourNum = date.getDate();
@@ -1276,10 +1277,10 @@ function formatDDL(date) {
 }
 
 
-function buildMatchdays(sched, threshold, reportsForPhase) {
+function buildMatchdays(sched, threshold, reportsForPhase, ddlBase = DDL_BASE) {
   const mds = sched.map((day, i) => ({
     journee: i + 1,
-    ddl: new Date(DDL_BASE.getTime() + i * 24 * 3600 * 1000),
+    ddl: new Date(ddlBase.getTime() + i * 24 * 3600 * 1000),
     matches: day.map(([home, away]) => {
       const key = `${home}-${away}`;
       const { score, forfeit } = getMatchResult(home, away, i, threshold);
@@ -1317,7 +1318,7 @@ function buildMatchdays(sched, threshold, reportsForPhase) {
 }
 
 const matchdaysAller = buildMatchdays(schedule, CURRENT_JOURNEE_ALLER, REPORTS.filter(r => !r.phase || r.phase === 'aller'));
-const matchdaysRetour = buildMatchdays(scheduleRetour, CURRENT_JOURNEE_RETOUR, REPORTS.filter(r => r.phase === 'retour'));
+const matchdaysRetour = buildMatchdays(scheduleRetour, CURRENT_JOURNEE_RETOUR, REPORTS.filter(r => r.phase === 'retour'), DDL_BASE_RETOUR);
 
 
 function isJourneeResolved(jd) {
