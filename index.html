@@ -858,7 +858,7 @@
 // ---- EN-TÊTE : journée en cours + dernière mise à jour ----
 const CURRENT_JOURNEE_ALLER = 13; // dernière journée aller entamée / en cours
 const CURRENT_JOURNEE_RETOUR = 5; // 0 = phase retour pas encore commencée
-const LAST_UPDATE = new Date(2026, 8, 18, 16, 23); // à modifier à chaque mise à jour
+const LAST_UPDATE = new Date(2026, 8, 18, 17, 16); // à modifier à chaque mise à jour
 
 function formatFrenchDate(date, joiner) {
   const jour = date.toLocaleDateString('fr-FR', { weekday: 'long' });
@@ -1078,6 +1078,8 @@ const results = {
   "Mahdi-Omar": [1,3],
   // Retour 5 (via WhatsApp)
   "Nouigues-Wael": [5,3],
+  // Retour 5 (via WhatsApp)
+  "Amen-Salah": [6,1],
 };
 
 // Matchs décidés par la fédération avec un score forcé mais SANS points attribués
